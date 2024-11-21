@@ -21,6 +21,7 @@
 
 from collections import Counter
 from collections import defaultdict
+
 dictionary_file = 'dictionary.txt'
 
 
@@ -80,33 +81,21 @@ def word_pairs(available_letters):
             if word:
                 words[len(word)].append(word)
     length = len(available_letters)
+    avail_counter = Counter(available_letters)
     pairs = set()
-    for i in range(length//2+1):
-        for word in words[i]:
-            letters = list(available_letters)
-            for letter in word:
-                if letter not in letters: break
-                if letter in letters:
-                    index = letters.index(letter)
-                    letters.pop(index)
-
-            if length - len(letters) == i:
-                for word2 in words[len(letters)]:
-                    if word2 == word: continue
-                    remaining_letters = letters.copy()
-                    for letter in word2:
-                        if letter not in letters: break
-                        if letter in remaining_letters:
-                            index = remaining_letters.index(letter)
-                            remaining_letters.pop(index)
-                    if not remaining_letters:
-                        pair = tuple(sorted([word, word2]))
-                        pairs.add(pair)
+    for i in range(1, length//2+1):
+        for w1 in words[i]:
+            w1_counter = Counter(w1)
+            if not w1_counter - avail_counter:
+                for w2 in words[length-i]:
+                    if w2 == w1: continue
+                    w2_counter = Counter(w2)
+                    if not w2_counter - (avail_counter - w1_counter):
+                        pairs.add(tuple(sorted([w1,w2])))
     pairs = sorted(list(pairs))
-    for w, w2 in pairs:
-        print(w, w2)
+    for w1, w2 in pairs:
+        print(w1, w2)
     # REPLACE PASS ABOVE WITH YOUR CODE
-                
 
 
 # word_pairs('EOZNZOE')
