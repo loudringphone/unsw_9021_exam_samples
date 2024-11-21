@@ -149,26 +149,23 @@ def paths(for_seed, density, top, bottom):
     grid2 = [[0 for _ in range(dim)]
                  for _ in range(dim)
             ]
-
-    DIRECTIONS = [(1,-1), (1,0), (1,1)]
     all_visited = set()
-    def dfs(i,j,visited):
-        visited.add((i,j))
+    DIRECTIONS = [(1,-1), (1,0), (1,1)]
+    def dfs(i, j, visited, bottom):
+        visited.add((i, j))
         if i == dim - 1 and j == bottom:
             all_visited.update(visited)
+            return
         for di, dj in DIRECTIONS:
             ni = i + di; nj = j + dj
             if ni < dim and 0 <= nj < dim and grid[ni][nj]:
-                dfs(ni, nj, visited)
-
-
-        visited.remove((i,j))
+                dfs(ni, nj, visited, bottom)
+        visited.remove((i, j))
 
     if grid[0][top] and grid[-1][bottom]:
-        dfs(0,top,set())
-        for i, j in all_visited:
-            grid2[i][j] = 1
-
+        dfs(0, top, set(), bottom)
+        for vi, vj in all_visited:
+            grid2[vi][vj] = 1
     print()
     print(f'Here are all paths from', top, 'at the top '
           'to', bottom, 'at the bottom:'
